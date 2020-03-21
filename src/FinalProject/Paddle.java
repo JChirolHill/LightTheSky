@@ -5,7 +5,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Paddle extends Rectangle {
-    private static final Point PADDLE_DIMENS = new Point(50, 10);
+    public static final Point PADDLE_DIMENS = new Point(50, 10);
     public static final float FROM_BOTTOM = 50.0f;
     private static final float VELOCITY = 10.0f;
 

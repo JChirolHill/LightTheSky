@@ -19,8 +19,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class GameOverMenu extends VBox {
-    private static final String SUCCESS_MSG = "Congrats!";
-    private static final String FAIL_MSG = "Better luck next time...";
+    private static final String GAME_OVER_MSG = "Light Up the Sky";
     private static final String SCORE_FILE = "scoreboard.txt";
 
     private Game game;
@@ -67,15 +66,9 @@ public class GameOverMenu extends VBox {
     }
 
     // show this menu, first update all displaying elements
-    public void show(boolean win, int score) {
+    public void show(int score) {
         setVisible(true);
-
-        if(win) {
-            textFeedback.setText(SUCCESS_MSG);
-        }
-        else {
-            textFeedback.setText(FAIL_MSG);
-        }
+        textFeedback.setText(GAME_OVER_MSG);
         textScore.setText(String.format("Score: %d", score));
 
         // high score and save logic
@@ -118,10 +111,6 @@ public class GameOverMenu extends VBox {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-        }
-
-        for(Pair<Date, Integer> score:scores) {
-            System.out.println(score.getKey() + "," + score.getValue());
         }
     }
 

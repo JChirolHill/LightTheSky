@@ -1,13 +1,22 @@
 package FinalProject;
 
+import javafx.animation.Animation;
+import javafx.animation.FillTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 
@@ -17,6 +26,7 @@ public class Game extends Application {
 
     private StackPane superRoot;
     private Pane root;
+    private TransitionBackground transBackground;
     private GameOverMenu gameOverMenu;
     private Sun sun;
     private Paddle paddle;
@@ -32,17 +42,17 @@ public class Game extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    //TODO show score on top while playing
+    // TODO show score on top while playing
     // TODO more elaborate scoring routine
-    // TODO fix bug where when play again goes straight to game over
 
     @Override
     public void start(Stage stage) {
         // set up stage
         stage.setTitle("Sunset");
         root = new Pane();
+        transBackground = new TransitionBackground(this, root);
         superRoot = new StackPane();
-        superRoot.getChildren().add(root);
+        superRoot.getChildren().add(transBackground);
 //        root.setFocusTraversable(true);
 //        root.requestFocus();
         Scene scene = new Scene(superRoot, SCENE_WIDTH, SCENE_HEIGHT);
@@ -113,18 +123,34 @@ public class Game extends Application {
         root.getChildren().add(s);
     }
 
-    public void handleGameOver(boolean win) {
+    public void handleGameOver() {
         // stop whatever driver is doing to keep the computer sane
         driver.stop();
 
-        if(win) {
-            // make stars shine animation
-            // TODO
-        }
+        // make stars shine animation and fade to night
+        transBackground.transitionToForeground();
+//        Animation animation = new Transition() {
+//            {
+//                setCycleDuration(Duration.millis(1000));
+//                setInterpolator(Interpolator.EASE_OUT);
+//            }
+//
+//            @Override
+//            protected void interpolate(double frac) {
+//                Color vColor = new Color(1, 0, 0, 1 - frac);
+//                box.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+//            }
+//        };
+//        animation.play();
 
-        // show game over menu
-        // TODO calculate the score as you go
-        gameOverMenu.show(win, score);
+//        root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+//        ft.setOnFinished(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                // show game over menu
+//                gameOverMenu.show(score);
+//            }
+//        });
     }
 
     public void handleStartOver() {
@@ -141,6 +167,11 @@ public class Game extends Application {
 
         // reset score
         score = 0;
+    }
+
+    public void handleBackgroundTransitionOver() {
+        // show game over menu
+        gameOverMenu.show(score);
     }
 
     public void increaseScore(int amt) {
