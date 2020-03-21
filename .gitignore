@@ -1,0 +1,15 @@
+.idea/
+FX01.iml
+Sound0.wav
+beep.wav
+input_midterm.txt
+out/
+output_midterm.txt
+output.txt
+whistle.wav
+src/DealChirolhi
+src/*.zip
+src/hw*
+src/MaxwellChirolhi
+src/labs
+hobbiton.jpg
