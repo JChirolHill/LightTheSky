@@ -50,4 +50,8 @@ public class TransitionBackground extends StackPane {
         });
         ft.play();
     }
+
+    public void reset() {
+        this.foreground.setOpacity(0);
+    }
 }

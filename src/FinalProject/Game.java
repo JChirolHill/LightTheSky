@@ -15,6 +15,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -28,6 +30,7 @@ public class Game extends Application {
     private Pane root;
     private TransitionBackground transBackground;
     private GameOverMenu gameOverMenu;
+    private Text textScore;
     private Sun sun;
     private Paddle paddle;
     private Driver driver;
@@ -63,6 +66,14 @@ public class Game extends Application {
         // create game over menu
         gameOverMenu = new GameOverMenu(this);
         superRoot.getChildren().add(gameOverMenu);
+
+        // create score text in top right corner
+        textScore = new Text();
+        textScore.setFill(Color.WHITE);
+        textScore.setX(SCENE_WIDTH - 100);
+        textScore.setY(50);
+        updateScore(0);
+        root.getChildren().add(textScore);
 
         // create the sun
         sun = new Sun(this);
@@ -127,39 +138,22 @@ public class Game extends Application {
         // stop whatever driver is doing to keep the computer sane
         driver.stop();
 
+        // hide score display
+        textScore.setVisible(false);
+
         // make stars shine animation and fade to night
         transBackground.transitionToForeground();
-//        Animation animation = new Transition() {
-//            {
-//                setCycleDuration(Duration.millis(1000));
-//                setInterpolator(Interpolator.EASE_OUT);
-//            }
-//
-//            @Override
-//            protected void interpolate(double frac) {
-//                Color vColor = new Color(1, 0, 0, 1 - frac);
-//                box.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
-//            }
-//        };
-//        animation.play();
-
-//        root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-//        ft.setOnFinished(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                // show game over menu
-//                gameOverMenu.show(score);
-//            }
-//        });
     }
 
     public void handleStartOver() {
         // hide game over menu
         gameOverMenu.hide();
 
-        // reset sun and driver
+        // reset necessary elements
         sun.reset();
+        transBackground.reset();
         driver.start();
+        textScore.setVisible(true);
 
         // remove all stars
         root.getChildren().removeAll(stars);
@@ -174,7 +168,13 @@ public class Game extends Application {
         gameOverMenu.show(score);
     }
 
-    public void increaseScore(int amt) {
+    // increase score by amt and update the display
+    public void updateScore(int amt) {
         score += amt;
+        textScore.setText(String.format("Score: %d", score));
+    }
+
+    public int getNumStars() {
+        return this.stars.size();
     }
 }

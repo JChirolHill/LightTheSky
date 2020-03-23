@@ -23,4 +23,10 @@ public class Driver extends AnimationTimer {
             game.getSun().move(delta);
         }
     }
+
+    @Override
+    public void stop() {
+        super.stop();
+        this.firstTime = true;
+    }
 }
