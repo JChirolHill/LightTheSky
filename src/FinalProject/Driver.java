@@ -2,6 +2,8 @@ package FinalProject;
 
 import javafx.animation.AnimationTimer;
 
+import java.util.ArrayList;
+
 public class Driver extends AnimationTimer {
     private Game game;
     private long prevTime;
@@ -20,7 +22,22 @@ public class Driver extends AnimationTimer {
         } else {
             double delta = (now - prevTime) * 1.0e-9;
             prevTime = now;
+
+            // move sun
             game.getSun().move(delta);
+
+            // move clouds
+            ArrayList<Cloud> toRemove = new ArrayList<>();
+            for(Cloud c : game.clouds) {
+                Cloud temp = c.move(delta);
+                if(temp != null) {
+                    toRemove.add(temp);
+                }
+            }
+            // delete all clouds that need deleting
+            for(Cloud c : toRemove) {
+                game.removeCloud(c);
+            }
         }
     }
 

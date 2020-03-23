@@ -12,6 +12,10 @@ public class Sun extends Circle {
     private final int MIN_SPEED = 250;
     private final int MAX_SPEED = 350;
     private final Point START_POS = new Point(Game.SCENE_WIDTH / 2, 0);
+    private final int MIN_Y_VEL = 80;
+    private final int[] STAR_BOUNDARIES = {3, 10, 20};
+    private final int[] POINT_AMOUNTS = {25, 50, 75}; // corresponds directly to point boundaries
+    private final int[] CLOUD_AMOUNTS = {1, 3, 5}; // corresponds directly to point boundaries
 
     private Random rand;
     private Game game;
@@ -45,18 +49,23 @@ public class Sun extends Circle {
         }
 
         // update score (get more bonus points the more stars created)
+        // add clouds based on number of stars already have
         int points = POINTS_PER_HIT; // baseline points per hit
         int numStars = game.getNumStars();
-        if(numStars > 30) { // bonus points per star if have a lot of stars already
-            points += 75 * (paddlePos == PaddlePos.Center ? 1 : 3);
-        }
-        else if(numStars > 15) {
-            points += 50 * (paddlePos == PaddlePos.Center ? 1 : 3);
-        }
-        else if(numStars > 5) {
-            points += 50 * (paddlePos == PaddlePos.Center ? 1 : 3);
+        int numCloudsToCreate = 0;
+        for(int i=STAR_BOUNDARIES.length - 1; i>=0; --i) {
+            if(numStars > STAR_BOUNDARIES[i]) {
+                numCloudsToCreate = CLOUD_AMOUNTS[i]; // add more clouds
+                points += POINT_AMOUNTS[i] * (paddlePos == PaddlePos.Center ? 1 : 3); // bonus points per star if have a lot of stars already
+                break;
+            }
         }
         game.updateScore(points);
+
+        // create necessary clouds
+        for(int i=0; i<numCloudsToCreate; ++i) {
+            game.createCloud();
+        }
 
         // put the sun back in front (so stays in front of all stars)
         this.toFront();
@@ -87,15 +96,21 @@ public class Sun extends Circle {
         if(p.didCollide(this)) {
             // hit at left third
             if(getCenterX() < p.getX() + Paddle.PADDLE_DIMENS.x / 3.0f) {
+                if(getCenterX() < p.getX() + Paddle.PADDLE_DIMENS.x / 6.0f) { // hit left edge
+                    registerHit(PaddlePos.Left);
+                }
                 velocity = Point.reflect(velocity, Point.normalize(new Point(-1, -5)));
-                setCenterY(Game.SCENE_HEIGHT - Paddle.FROM_BOTTOM - RADIUS - 1); // prevent from sticking to paddle
-                registerHit(PaddlePos.Left);
+                setCenterY(Game.SCENE_HEIGHT - Paddle.FROM_BOTTOM - RADIUS - 5); // prevent from sticking to paddle
+                registerHit(PaddlePos.Center);
             }
             // hit at right third
             else if(getCenterX() > p.getX() + 2 * Paddle.PADDLE_DIMENS.x / 3.0f) {
+                if(getCenterX() > p.getX() + 2 * Paddle.PADDLE_DIMENS.x / 6.0f) { // hit left edge
+                    registerHit(PaddlePos.Right);
+                }
                 velocity = Point.reflect(velocity, Point.normalize(new Point(1, -5)));
-                setCenterY(Game.SCENE_HEIGHT - Paddle.FROM_BOTTOM - RADIUS - 1); // prevent from sticking to paddle
-                registerHit(PaddlePos.Right);
+                setCenterY(Game.SCENE_HEIGHT - Paddle.FROM_BOTTOM - RADIUS - 5); // prevent from sticking to paddle
+                registerHit(PaddlePos.Center);
             }
             // hit at middle
             else {
@@ -105,8 +120,8 @@ public class Sun extends Circle {
             }
 
             // correct for nearly horizonal velocity
-            if(Math.abs(velocity.y) < 50) {
-                velocity.y = -50;
+            if(Math.abs(velocity.y) < MIN_Y_VEL) {
+                velocity.y = -1 * MIN_Y_VEL;
             }
         }
     }

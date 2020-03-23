@@ -28,6 +28,7 @@ public class Game extends Application {
 
     private StackPane superRoot;
     private Pane root;
+    private Pane cloudRoot;
     private TransitionBackground transBackground;
     private GameOverMenu gameOverMenu;
     private Text textScore;
@@ -36,17 +37,17 @@ public class Game extends Application {
     private Driver driver;
     private int score;
     private ArrayList<Star> stars;
+    public ArrayList<Cloud> clouds;
 
     public void init() {
         score = 0;
         stars = new ArrayList<>();
+        clouds = new ArrayList<>();
     }
 
     public static void main(String[] args) {
         launch(args);
     }
-    // TODO show score on top while playing
-    // TODO more elaborate scoring routine
 
     @Override
     public void start(Stage stage) {
@@ -62,6 +63,10 @@ public class Game extends Application {
         setUpStage(stage);
         stage.setScene(scene);
         stage.show();
+
+        // create pane for clouds and ocean
+        cloudRoot = new Pane();
+        superRoot.getChildren().add(cloudRoot);
 
         // create game over menu
         gameOverMenu = new GameOverMenu(this);
@@ -84,7 +89,7 @@ public class Game extends Application {
         root.getChildren().add(paddle);
 
         // move listener for mouse to move paddle
-        root.setOnMouseMoved(new EventHandler<MouseEvent>() {
+        cloudRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 paddle.handleMouseMove(new Point(event.getX(), event.getY()));
@@ -92,7 +97,7 @@ public class Game extends Application {
         });
 
         // move listener for keyboard left and right or A and D
-//        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//        cloudRoot.setOnKeyPressed(new EventHandler<KeyEvent>() {
 //            @Override
 //            public void handle(KeyEvent event) {
 //                System.out.println("pressed");
@@ -134,6 +139,17 @@ public class Game extends Application {
         root.getChildren().add(s);
     }
 
+    public void createCloud() {
+        Cloud c = new Cloud(this);
+        clouds.add(c);
+        cloudRoot.getChildren().add(c);
+    }
+
+    public void removeCloud(Cloud c) {
+        clouds.remove(c);
+        cloudRoot.getChildren().remove(c);
+    }
+
     public void handleGameOver() {
         // stop whatever driver is doing to keep the computer sane
         driver.stop();
@@ -158,6 +174,10 @@ public class Game extends Application {
         // remove all stars
         root.getChildren().removeAll(stars);
         stars.clear();
+
+        // remove all clouds
+        root.getChildren().removeAll(clouds);
+        clouds.clear();
 
         // reset score
         score = 0;
