@@ -38,6 +38,11 @@ public class Driver extends AnimationTimer {
             for(Cloud c : toRemove) {
                 game.removeCloud(c);
             }
+
+            // poll paddle to move if key pressed
+            if(game.paddle.xDir != 0.0f) {
+                game.paddle.handleKeyMove();
+            }
         }
     }
 

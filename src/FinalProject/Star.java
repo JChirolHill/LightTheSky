@@ -2,37 +2,34 @@ package FinalProject;
 
 import javafx.animation.PathTransition;
 import javafx.animation.TranslateTransition;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 import javafx.util.Duration;
 
 public class Star extends Circle {
-    private static final int STAR_RADIUS = 10;
+    public static final int STAR_RADIUS = 10;
 
     private Point dest;
 
-    public Star(Point start, Point dest) {
+    public Star(Point start, Point dest, boolean chirality) {
         this.dest = dest;
-        this.setFill(Color.ORANGE);
+        this.setFill(new ImagePattern(new Image("FinalProject/Assets/star.png")));
         this.setCenterX(start.x);
         this.setCenterY(start.y);
         this.setRadius(STAR_RADIUS);
 
         // set animation to get to destination
-//        TranslateTransition tt = new TranslateTransition();
-//        tt.setNode(this);
-//        tt.setByX(dest.x - start.x);
-//        tt.setByY(dest.y - start.y);
-//        tt.play();
+        Point midpoint1 = new Point(chirality ? 0 : Game.SCENE_WIDTH, start.y - (dest.y - start.y) / 3);
+        Point midpoint2 = new Point(start.y - (dest.y - start.y) * 2 / 3, chirality ? Game.SCENE_WIDTH : 0);
         CubicCurve cubiccurve = new CubicCurve(
-                start.x, start.y, 0, 700, 600, 600, dest.x, dest.y);
+                start.x, start.y, midpoint1.x, midpoint1.y, midpoint2.x, midpoint2.y, dest.x, dest.y);
         PathTransition pt = new PathTransition();
         pt.setNode(this);
         pt.setPath(cubiccurve);
         pt.setDuration(new Duration(1000));
         pt.play();
     }
-
-//    private Point equiDist()
 }

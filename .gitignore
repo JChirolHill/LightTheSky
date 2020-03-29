@@ -11,6 +11,7 @@ src/DealChirolhi
 src/*.zip
 src/hw*
 src/MaxwellChirolhi
+src/NeibChirolhi
 src/labs
 scoreboard.txt
 hobbiton.jpg

@@ -1,13 +1,20 @@
 package FinalProject;
 
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -19,7 +26,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class GameOverMenu extends VBox {
-    private static final String GAME_OVER_MSG = "Light Up the Sky";
+    private static final String GAME_OVER_MSG = "Wait for the clouds to pass\nand gaze at the stars";
     private static final String SCORE_FILE = "scoreboard.txt";
 
     private Game game;
@@ -29,16 +36,24 @@ public class GameOverMenu extends VBox {
     private int highScore;
     private ArrayList<Pair<Date, Integer>> scores;
 
-    public GameOverMenu(Game game) {
+    public GameOverMenu(Game game, Scene scene) {
         this.game = game;
         this.scores = new ArrayList<>();
         this.setMaxSize(Game.SCENE_WIDTH * 0.75, Game.SCENE_HEIGHT * 0.5);
-        this.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setAlignment(Pos.CENTER);
+        this.setOpacity(0);
         this.setVisible(false);
         this.textFeedback = new Text();
+        this.textFeedback.setFill(Color.WHITE);
+        this.textFeedback.setTextAlignment(TextAlignment.CENTER);
+        this.textFeedback.setText(GAME_OVER_MSG);
+        this.textFeedback.setFont(Font.loadFont(getClass().getResourceAsStream("Assets/ShakeItOff.ttf"), 30));
         this.textScore = new Text();
+        this.textScore.setFill(Color.WHITE);
+        this.textScore.setFont(Font.loadFont(getClass().getResourceAsStream("Assets/ShakeItOff.ttf"), 20));
         this.textHighScore = new Text();
+        this.textHighScore.setFill(Color.WHITE);
+        this.textHighScore.setFont(Font.loadFont(getClass().getResourceAsStream("Assets/ShakeItOff.ttf"), 20));
         this.highScore = 0;
 
         // show feedback text
@@ -52,6 +67,11 @@ public class GameOverMenu extends VBox {
 
         // show play again button
         Button again = new Button("Play Again?");
+        again.setFont(Font.loadFont(getClass().getResourceAsStream("Assets/ShakeItOff.ttf"), 20));
+        again.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        again.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        again.setStyle("-fx-border-radius: 30;-fx-border-color: white;-fx-stroke-width:5;");
+        again.setTextFill(Color.WHITE);
         again.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -67,8 +87,6 @@ public class GameOverMenu extends VBox {
 
     // show this menu, first update all displaying elements
     public void show(int score) {
-        setVisible(true);
-        textFeedback.setText(GAME_OVER_MSG);
         textScore.setText(String.format("Score: %d", score));
 
         // high score and save logic
@@ -77,15 +95,25 @@ public class GameOverMenu extends VBox {
             textHighScore.setFill(Color.ORANGE);
         }
         else {
-            textHighScore.setFill(Color.BLACK);
+            textHighScore.setFill(Color.WHITE);
         }
         textHighScore.setText(String.format("High Score: %d", highScore));
         scores.add(new Pair<>(new Date(), score));
         writeScores();
+
+        // fade in the menu
+        this.setVisible(true);
+        FadeTransition ft = new FadeTransition();
+        ft.setNode(this);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.setDuration(new Duration(200));
+        ft.play();
     }
 
     // hide this menu
     public void hide() {
+        this.setOpacity(0);
         this.setVisible(false);
     }
 

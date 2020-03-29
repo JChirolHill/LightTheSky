@@ -8,10 +8,10 @@ import javafx.scene.shape.Rectangle;
 import java.util.Random;
 
 public class Cloud extends Rectangle {
-    private final Point CLOUD_DIMENS = new Point(300, 75);
+    private final Point CLOUD_DIMENS = new Point(373, 100);
     private final double SMALL_MULTIPLIER = 0.5;
     private final double LARGE_MULTIPLIER = 2;
-    private final int LOWEST_FROM_BOTTOM = 150;
+    private final int LOWEST_FROM_PADDLE = (int)Paddle.FROM_BOTTOM - 40;
     private final int MIN_SPEED = 50;
     private final int MAX_SPEED = 100;
 
@@ -46,26 +46,28 @@ public class Cloud extends Rectangle {
         switch (size) {
             case Small:
                 this.setWidth(SMALL_MULTIPLIER * CLOUD_DIMENS.x);
+                this.setHeight(SMALL_MULTIPLIER * CLOUD_DIMENS.y);
                 break;
             case Normal:
                 this.setWidth(CLOUD_DIMENS.x);
+                this.setHeight(CLOUD_DIMENS.y);
                 break;
             case Large:
                 this.setWidth(LARGE_MULTIPLIER * CLOUD_DIMENS.x);
+                this.setHeight(LARGE_MULTIPLIER * CLOUD_DIMENS.y);
                 break;
         }
-        this.setHeight(CLOUD_DIMENS.y);
-        this.setFill(Color.BEIGE);
-//        this.setFill(new ImagePattern(new Image("FinalProject/hobbiton.jpg")));
 
         // set position
         if(dir == CloudDirection.Left) { // cloud moving left
             this.setX(Game.SCENE_WIDTH);
+            this.setFill(new ImagePattern(new Image("FinalProject/Assets/cloudleft.png")));
         }
         else { // cloud moving right
-            this.setX(-1 * CLOUD_DIMENS.x);
+            this.setX(-1 * this.getWidth());
+            this.setFill(new ImagePattern(new Image("FinalProject/Assets/cloudright.png")));
         }
-        this.setY(rand.nextInt((int)Game.SCENE_HEIGHT - LOWEST_FROM_BOTTOM));
+        this.setY(rand.nextInt((int)Game.SCENE_HEIGHT - (int)this.getHeight() - LOWEST_FROM_PADDLE));
     }
 
     // returns itself to signal should be destroyed, else returns null and moves appropriately

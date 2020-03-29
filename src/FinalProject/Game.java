@@ -1,30 +1,26 @@
 package FinalProject;
 
-import javafx.animation.Animation;
-import javafx.animation.FillTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Game extends Application {
-    public static final float SCENE_WIDTH = 600.0f;
-    public static final float SCENE_HEIGHT = 800.0f;
+    public static final float SCENE_WIDTH = 800.0f;
+    public static final float SCENE_HEIGHT = 700.0f;
+    private static final String MUSIC = "src/FinalProject/Assets/betterdays.mp3";
 
     private StackPane superRoot;
     private Pane root;
@@ -33,14 +29,16 @@ public class Game extends Application {
     private GameOverMenu gameOverMenu;
     private Text textScore;
     private Sun sun;
-    private Paddle paddle;
+    public Paddle paddle;
     private Driver driver;
     private int score;
     private ArrayList<Star> stars;
     public ArrayList<Cloud> clouds;
+    public boolean gameOver;
 
     public void init() {
         score = 0;
+        gameOver = false;
         stars = new ArrayList<>();
         clouds = new ArrayList<>();
     }
@@ -52,31 +50,47 @@ public class Game extends Application {
     @Override
     public void start(Stage stage) {
         // set up stage
-        stage.setTitle("Sunset");
-        root = new Pane();
-        transBackground = new TransitionBackground(this, root);
+        stage.setTitle("Starry Night");;
         superRoot = new StackPane();
-        superRoot.getChildren().add(transBackground);
-//        root.setFocusTraversable(true);
-//        root.requestFocus();
         Scene scene = new Scene(superRoot, SCENE_WIDTH, SCENE_HEIGHT);
         setUpStage(stage);
         stage.setScene(scene);
         stage.show();
 
-        // create pane for clouds and ocean
+        // set up and play music
+        Media sound = new Media(new File(MUSIC).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setOnReady(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("ready");
+                mediaPlayer.play();
+            }
+        });
+
+        // create backgrounds
+        transBackground = new TransitionBackground(this);
+        superRoot.getChildren().add(transBackground);
+
+        // create root responsible for game functions
+        root = new Pane();
+        superRoot.getChildren().add(root);
+
+        // create pane for clouds
         cloudRoot = new Pane();
         superRoot.getChildren().add(cloudRoot);
 
         // create game over menu
-        gameOverMenu = new GameOverMenu(this);
+        gameOverMenu = new GameOverMenu(this, scene);
         superRoot.getChildren().add(gameOverMenu);
 
         // create score text in top right corner
         textScore = new Text();
         textScore.setFill(Color.WHITE);
-        textScore.setX(SCENE_WIDTH - 100);
+        textScore.setX(SCENE_WIDTH - 200);
         textScore.setY(50);
+        textScore.setFont(Font.loadFont(getClass().getResourceAsStream("Assets/ShakeItOff.ttf"), 20));
         updateScore(0);
         root.getChildren().add(textScore);
 
@@ -92,25 +106,35 @@ public class Game extends Application {
         cloudRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                paddle.handleMouseMove(new Point(event.getX(), event.getY()));
+                if(!gameOver) {
+                    paddle.handleMouseMove(new Point(event.getX(), event.getY()));
+                }
             }
         });
 
         // move listener for keyboard left and right or A and D
-//        cloudRoot.setOnKeyPressed(new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent event) {
-//                System.out.println("pressed");
-//                if(event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.A) {
-//                    System.out.println("Left");
-//                    paddle.handleKeyMove(-1.0f);
-//                }
-//                else if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.D) {
-//                    System.out.println("Right");
-//                    paddle.handleKeyMove(1.0f);
-//                }
-//            }
-//        });
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.A) {
+                    paddle.handleKeyMove(-1.0f);
+                }
+                else if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.D) {
+                    paddle.handleKeyMove(1.0f);
+                }
+            }
+        });
+        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.A) {
+                    paddle.handleKeyMove(0);
+                }
+                else if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.D) {
+                    paddle.handleKeyMove(0);
+                }
+            }
+        });
 
         // set up the animation for sun
         driver = new Driver(this);
@@ -133,8 +157,8 @@ public class Game extends Application {
         return paddle;
     }
 
-    public void createStar(Point start, Point dest) {
-        Star s = new Star(start, dest);
+    public void createStar(Point start, Point dest, boolean chirality) {
+        Star s = new Star(start, dest, chirality);
         stars.add(s);
         root.getChildren().add(s);
     }
@@ -151,9 +175,6 @@ public class Game extends Application {
     }
 
     public void handleGameOver() {
-        // stop whatever driver is doing to keep the computer sane
-        driver.stop();
-
         // hide score display
         textScore.setVisible(false);
 
@@ -170,6 +191,7 @@ public class Game extends Application {
         transBackground.reset();
         driver.start();
         textScore.setVisible(true);
+        gameOver = false;
 
         // remove all stars
         root.getChildren().removeAll(stars);
