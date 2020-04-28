@@ -58,11 +58,11 @@ public class Cloud extends Rectangle {
         // set position
         if(dir == CloudDirection.Left) { // cloud moving left
             this.setX(Game.SCENE_WIDTH);
-            this.setFill(new ImagePattern(new Image("Assets/cloudleft.png")));
+            this.setFill(new ImagePattern(ResourceLoader.loadImage("Assets/cloudleft.png")));
         }
         else { // cloud moving right
             this.setX(-1 * this.getWidth());
-            this.setFill(new ImagePattern(new Image("Assets/cloudright.png")));
+            this.setFill(new ImagePattern(ResourceLoader.loadImage("Assets/cloudright.png")));
         }
         this.setY(rand.nextInt((int)Game.SCENE_HEIGHT - (int)this.getHeight() - LOWEST_FROM_PADDLE));
     }

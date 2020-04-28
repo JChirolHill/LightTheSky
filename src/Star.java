@@ -12,7 +12,7 @@ public class Star extends Circle {
 
     public Star(Point start, Point dest, boolean chirality) {
         this.dest = dest;
-        this.setFill(new ImagePattern(new Image("Assets/star.png")));
+        this.setFill(new ImagePattern(ResourceLoader.loadImage("Assets/star.png")));
         this.setCenterX(start.x);
         this.setCenterY(start.y);
         this.setRadius(STAR_RADIUS);

@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.Random;
 
 public class Sun extends Circle {
-    private static final String HIT_PING = "src/Assets/ping.mp3";
+    private static final String HIT_PING = "Assets/ping.mp3";
     private static final int POINTS_PER_HIT = 50;
     private static final int RADIUS = 25;
     private final int MIN_SPEED = 250;
@@ -24,7 +24,6 @@ public class Sun extends Circle {
     private Random rand;
     private Game game;
     private Point velocity;
-    private MediaPlayer mediaPlayer;
     private AudioClip ping;
 
     private enum PaddlePos {
@@ -38,10 +37,10 @@ public class Sun extends Circle {
         this.game = game;
         this.velocity = new Point(calcRandVelocity(), calcRandVelocity());
         reset();
-        this.setFill(new ImagePattern(new Image("Assets/sun.png")));
+        this.setFill(new ImagePattern(ResourceLoader.loadImage("Assets/sun.png")));
 
         // set up music player for beeps when hit paddle
-        ping = new AudioClip(new File(HIT_PING).toURI().toString());
+        ping = ResourceLoader.loadAudioClip(HIT_PING);
     }
 
     public void reset() {

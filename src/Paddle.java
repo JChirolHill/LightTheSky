@@ -17,7 +17,7 @@ public class Paddle extends Rectangle {
         this.setY(Game.SCENE_HEIGHT - FROM_BOTTOM);
         this.setWidth(PADDLE_DIMENS.x);
         this.setHeight(PADDLE_DIMENS.y);
-        this.setFill(new ImagePattern(new Image("Assets/otter.png")));
+        this.setFill(new ImagePattern(ResourceLoader.loadImage("Assets/otter.png")));
     }
 
     public void handleMouseMove(Point event) {

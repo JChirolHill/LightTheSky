@@ -28,21 +28,21 @@ public class TransitionBackground extends StackPane {
 
         // create panes for ocean
         oceanLight = new Pane();
-        oceanLight.setBackground(new Background(new BackgroundImage(new Image(OCEAN_FILE_LIGHT),
+        oceanLight.setBackground(new Background(new BackgroundImage(ResourceLoader.loadImage(OCEAN_FILE_LIGHT),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 new BackgroundSize(Game.SCENE_WIDTH, Game.SCENE_HEIGHT, false, false, false, true))));
         this.getChildren().add(oceanLight);
         Pane oceanDark = new Pane();
-        oceanDark.setBackground(new Background(new BackgroundImage(new Image(OCEAN_FILE_DARK),
+        oceanDark.setBackground(new Background(new BackgroundImage(ResourceLoader.loadImage(OCEAN_FILE_DARK),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 new BackgroundSize(Game.SCENE_WIDTH, Game.SCENE_HEIGHT, false, false, false, true))));
         this.getChildren().add(oceanDark);
 
         // set images for each
-        this.background.setBackground(new Background(new BackgroundImage(new Image(BACKGROUND_FILE),
+        this.background.setBackground(new Background(new BackgroundImage(ResourceLoader.loadImage(BACKGROUND_FILE),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 new BackgroundSize(Game.SCENE_WIDTH, Game.SCENE_HEIGHT, false, false, false, true))));
-        this.foreground.setBackground(new Background(new BackgroundImage(new Image(FOREGROUND_FILE),
+        this.foreground.setBackground(new Background(new BackgroundImage(ResourceLoader.loadImage(FOREGROUND_FILE),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 new BackgroundSize(Game.SCENE_WIDTH, Game.SCENE_HEIGHT, false, false, false, true))));
 

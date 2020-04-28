@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class Game extends Application {
     public static final float SCENE_WIDTH = 800.0f;
     public static final float SCENE_HEIGHT = 700.0f;
-    private static final String MUSIC = "src/Assets/betterdays.mp3";
+    private static final String MUSIC = "Assets/betterdays.mp3";
 
     private StackPane superRoot;
     private Pane root;
@@ -33,7 +34,7 @@ public class Game extends Application {
     private ArrayList<Star> stars;
     public ArrayList<Cloud> clouds;
     public boolean gameOver;
-    private MediaPlayer mediaPlayer;
+    private AudioClip sound;
 
     public void init() {
         score = 0;
@@ -57,10 +58,9 @@ public class Game extends Application {
         stage.show();
 
         // set up and play music
-        Media sound = new Media(new File(MUSIC).toURI().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setAutoPlay(true);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        sound = ResourceLoader.loadAudioClip(MUSIC);
+        sound.setCycleCount(AudioClip.INDEFINITE);
+        sound.play();
 
         // create backgrounds
         transBackground = new TransitionBackground(this);
