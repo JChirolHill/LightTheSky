@@ -2,6 +2,9 @@
 
 The sun is setting, but there are no stars in the sky.  It is up to you, a small otter in the ocean, to bounce the sun to create stars to fill the night sky.
 
+## How to Run and Play
+Download the jar file in out/artifacts/StarryNight_jar.  Double click the .jar file to run and play the game.
+
 ## Inspiration
 With more people staying at home from the epidemic, we wanted to create a simple and gentle, yet fun game.  We wanted to transport the users to a sort of dream world with different rules than our world abides to.  This is only possible with games.  With its fun and yet low-stress game design, we hope to provide users with a pleasant experience to help them bear this difficult time.
 
